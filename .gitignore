@@ -20,3 +20,5 @@
 .vscode
 
 docker-compose.yaml
+
+/release

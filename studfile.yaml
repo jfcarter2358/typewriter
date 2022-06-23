@@ -23,7 +23,7 @@ build-local:
     env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o typewriter
     mv typewriter ../dist/typewriter
     cp launch.sh ../dist/launch-typewriter.sh
-    chmod +x ../dist/{service}/launch-typewriter.sh
+    chmod +x ../dist/launch-typewriter.sh
     cd ..
 
     print('Done!')
@@ -32,7 +32,7 @@ bundle:
   options: []
   cmd: |
     stud build-local
-    version = $(cat VERSION)
+    version = $(cat VERSION)[:-1]
 
     mv dist typewriter-{version}
 
@@ -42,6 +42,8 @@ bundle:
     tar -czvf typewriter-{version}.tar.gz *
     cp typewriter-{version}.tar.gz ../release
     cd ..
+
+    rm -rf typewriter-{version}
 
     print('Done!')
 clean:
