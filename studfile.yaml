@@ -1,0 +1,70 @@
+.variables:
+  platforms:
+    - linux/amd64
+    - linux/arm64
+    - linux/arm/v7
+  docker_org: jfcarter2358
+build-docker:
+  help: Build docker image of Typewriter
+  options: []
+  args: []
+  cmd: |
+    stud clean
+
+    docker build -t typewriter .
+build-local:
+  help: Build local binary of Typewriter
+  options: []
+  cmd: |
+    stud clean
+    mkdir dist
+
+    cd src
+    env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -v -o typewriter
+    mv typewriter ../dist/typewriter
+    cp launch.sh ../dist/launch-typewriter.sh
+    chmod +x ../dist/{service}/launch-typewriter.sh
+    cd ..
+
+    print('Done!')
+bundle:
+  help: Bundle binary builds for use as release artifacts
+  options: []
+  cmd: |
+    stud build-local
+    version = $(cat VERSION)
+
+    mv dist typewriter-{version}
+
+    mkdir -p release
+
+    cd typewriter-{version}
+    tar -czvf typewriter-{version}.tar.gz *
+    cp typewriter-{version}.tar.gz ../release
+    cd ..
+
+    print('Done!')
+clean:
+  help: Remove build and test artifacts
+  options: []
+  cmd: |
+    rm -r dist || true
+    rm -r release || true
+    rm -r typewriter-* || true
+publish:
+  help: Publish release docker images to Docker Hub
+  options: []
+  cmd: |
+    platform_string = ','.join(platforms)
+    version = ?(cat VERSION).strip()
+
+    print(f"Running build command: docker buildx build --platform {platform_string} -t {docker_org}/typewriter:{version} --push .")
+    docker buildx build --platform {platform_string} -t {docker_org}/typewriter:{version} --push .
+
+    print('Done!')
+run-docker:
+  help: Deploy local images of Typewriter via docker-compose
+  options: []
+  cmd: |
+    docker-compose rm -f
+    docker-compose up

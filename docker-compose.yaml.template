@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  typewriter:
+    image: "typewriter"
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      TYPEWRITER_REVERSE_PROXIES: |
+        [
+          {
+              "prefix": "velocimodel",
+              "server": "localhost:9000"
+          },
+          {
+              "prefix": "provider",
+              "server": "localhost:9005"
+          }
+        ]
+      TYPEWRITER_GIT: |
+        {
+          "url": "",
+          "username": "",
+          "password": "",
+          "branch": "",
+          "email": "",
+          "name": ""
+        }
+    tty: true

@@ -1,0 +1,31 @@
+name: ABC
+path: abc
+---
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            function makeRequest() {
+                $.ajax({
+                    url: "/api/foobar",
+                    type: "GET",
+                    contentType: 'application/json',
+                    success: function(response) {
+                        console.log("Success!")
+                    },
+                    error: function(response) {
+                        console.log("Error!")
+                    }
+                });
+            }
+            function hrefReplace() {
+                window.location.href = "/foo"
+            }
+        </script>
+    </head>
+    <body>
+        <button onclick="makeRequest()">Click me!</button>
+        <button onclick="hrefReplace()">Also click me!</button>
+        <a href="/foo">Link to foo</a>
+    </body>
+</html>
