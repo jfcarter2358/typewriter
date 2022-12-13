@@ -24,7 +24,6 @@ SHELL ["/bin/bash", "-c"]
 
 RUN mkdir /home/typewriter/.ssh
 RUN mkdir /home/typewriter/data
-COPY data /home/typewriter/data
 
 ADD src/start-typewriter.sh /home/typewriter/start-typewriter.sh
 RUN chmod u+x /home/typewriter/start-typewriter.sh

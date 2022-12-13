@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"os"
@@ -39,6 +40,19 @@ func LoadConfig() {
 	configPath := os.Getenv(ENV_PREFIX + "CONFIG_PATH")
 	if configPath == "" {
 		configPath = DEFAULT_CONFIG_PATH
+	}
+
+	Config = ConfigObject{
+		Port:           8080,
+		Redirect:       "/index",
+		ReverseProxies: []ReverseProxyObject{},
+		Git:            GitObject{},
+	}
+
+	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
+		configData, _ := json.MarshalIndent(Config, "", " ")
+
+		_ = ioutil.WriteFile(configPath, configData, 0644)
 	}
 
 	jsonFile, err := os.Open(configPath)
